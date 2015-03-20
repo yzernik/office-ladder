@@ -1,7 +1,17 @@
-@(message: String)
+@(identity: Option[models.User], message: String)
 
 @main("Welcome to Play") {
 
-    @play20.welcome(message)
+	<p>
+	@if(identity.isDefined){
+		<a href="@routes.MyApplication.signOut">Sign Out</a>
+	} else {
+		<a href="@routes.MyApplication.signIn">Sign In</a>
+		</br>
+		<a href="@routes.MyApplication.signUp">Sign Up</a>
+	}
+	</p>
+
+    @message
 
 }
