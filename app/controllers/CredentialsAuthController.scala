@@ -4,6 +4,7 @@ import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.LoginEvent
+import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.Silhouette
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.core.providers.Credentials
@@ -34,24 +35,32 @@ object CredentialsAuthController
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.signIn(form))),
-      credentials => getLoginDetails(credentials))
+      credentials => getAuthResponse(credentials))
   }
 
-  def getLoginDetails(credentials: Credentials)(implicit request: Request[AnyContent]) = {
+  def getAuthResponse(credentials: Credentials)(implicit request: Request[AnyContent]) = {
+    val r = for {
+      loginInfo <- getLoginInfo(credentials)
+      resp <- getResponse(loginInfo)
+    } yield resp
+    r.recoverWith(exceptionHandler)
+  }
+
+  def getLoginInfo(credentials: Credentials) =
     (env.providers.get(CredentialsProvider.Credentials) match {
       case Some(p: CredentialsProvider) => p.authenticate(credentials)
       case _                            => Future.failed(new AuthenticationException(s"Cannot find credentials provider"))
-    }).flatMap { loginInfo =>
-      userService.retrieve(loginInfo).flatMap {
-        case Some(user) => env.authenticatorService.create(user).map {
-          case Some(authenticator) =>
-            env.eventBus.publish(LoginEvent(user, request, request2lang))
-            env.authenticatorService.send(authenticator, Redirect(routes.MyApplication.index))
-          case None => throw new AuthenticationException("Couldn't create an authenticator")
-        }
-        case None => Future.failed(new AuthenticationException("Couldn't find user"))
+    })
+
+  def getResponse(loginInfo: LoginInfo)(implicit request: Request[AnyContent]) =
+    userService.retrieve(loginInfo).flatMap {
+      case Some(user) => env.authenticatorService.create(user).map {
+        case Some(authenticator) =>
+          env.eventBus.publish(LoginEvent(user, request, request2lang))
+          env.authenticatorService.send(authenticator, Redirect(routes.MyApplication.index))
+        case None => throw new AuthenticationException("Couldn't create an authenticator")
       }
-    }.recoverWith(exceptionHandler)
-  }
+      case None => Future.failed(new AuthenticationException("Couldn't find user"))
+    }
 
 }
