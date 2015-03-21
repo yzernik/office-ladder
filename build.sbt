@@ -12,3 +12,5 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "postgresql" % "postgresql" % "9.1-901.jdbc4"
 )
+
+EclipseKeys.createSrc := EclipseCreateSrc.All

@@ -9,7 +9,6 @@ import com.mohiva.play.silhouette.core.EventBus
 
 import models.User
 import models.daos.PasswordInfoDAO
-import models.services.UserService
 
 trait EnvironmentModule
   extends AuthenticatorServiceModule

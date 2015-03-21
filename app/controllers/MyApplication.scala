@@ -23,7 +23,7 @@ object MyApplication
   def index = UserAwareAction { implicit request =>
     val userName = request.identity match {
       case Some(identity) => identity.username
-      case None => "Guest"
+      case None           => "Guest"
     }
     Ok(views.html.index(request.identity, "Hello %s".format(userName)))
   }
@@ -36,7 +36,7 @@ object MyApplication
   def signIn = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.MyApplication.index))
-      case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
+      case None       => Future.successful(Ok(views.html.signIn(SignInForm.form)))
     }
   }
 
@@ -48,7 +48,7 @@ object MyApplication
   def signUp = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.MyApplication.index))
-      case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
+      case None       => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
     }
   }
 

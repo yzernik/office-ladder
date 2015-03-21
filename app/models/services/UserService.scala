@@ -2,8 +2,6 @@ package models.services
 
 import scala.concurrent.Future
 
-import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
-import com.mohiva.play.silhouette.core.services.AuthInfo
 import com.mohiva.play.silhouette.core.services.IdentityService
 
 import models.User

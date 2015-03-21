@@ -1,7 +1,9 @@
 package forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.email
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
 
 /**
  * The form which handles the sign up process.
