@@ -22,7 +22,7 @@ object MyApplication
    */
   def index = UserAwareAction { implicit request =>
     val userName = request.identity match {
-      case Some(identity) => identity.username
+      case Some(identity) => identity.email
       case None           => "Guest"
     }
     Ok(views.html.index(request.identity, "Hello %s".format(userName)))
@@ -37,18 +37,6 @@ object MyApplication
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.MyApplication.index))
       case None       => Future.successful(Ok(views.html.signIn(SignInForm.form)))
-    }
-  }
-
-  /**
-   * Handles the Sign Up action.
-   *
-   * @return The result to display.
-   */
-  def signUp = UserAwareAction.async { implicit request =>
-    request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.MyApplication.index))
-      case None       => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
     }
   }
 

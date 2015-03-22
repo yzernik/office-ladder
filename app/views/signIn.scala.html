@@ -11,15 +11,18 @@
         </div>
     }
     <fieldset>
-        <legend class="col-md-6 col-md-offset-3">Sign in with your credentials</legend>
-        @helper.form(action = routes.CredentialsAuthController.authenticate()) {
-            @text(signInForm("identifier"), "Username")
-            @password(signInForm("password"), "Password")
-            <div class="form-group">
-                <div class="col-md-6 col-md-offset-3">
-                    <button id="submit" type="submit" value="submit" class="btn btn-primary btn-block">Submit</button>
+        <legend class="col-md-6 col-md-offset-3">Sign in with Oauth2</legend>
+        @defining(env.providers.values.filter(_.isInstanceOf[SocialProvider[_]])) { providers =>
+            @if(!providers.isEmpty) {
+                <div class="social-providers col-md-6 col-md-offset-3">
+                    <p>Use your existing account on one of the following services to sign in:</p>
+                    <div>
+                    @for(p <- providers) {
+                        <a href="@routes.SocialAuthController.authenticate(p.id)"><img src="@routes.Assets.at(s"images/providers/${p.id}.png")" style="width:60px;height:60px;"></a>
+                    }
+                    </div>
                 </div>
-            </div>
+            }
         }
     </fieldset>
 }

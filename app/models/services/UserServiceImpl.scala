@@ -1,8 +1,13 @@
 package models.services
 
+import java.util.UUID
+
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.core.LoginInfo
+import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
+import com.mohiva.play.silhouette.core.services.AuthInfo
 
 import models.User
 import models.daos.UserDAO
@@ -28,6 +33,34 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = userDAO.save(user)
+  def save(user: User)(implicit ec: ExecutionContext) = userDAO.save(user)
+
+  /**
+   * Saves the social profile for a user.
+   *
+   * If a user exists for this profile then update the user, otherwise create a new user with the given profile.
+   *
+   * @param profile The social profile to save.
+   * @return The user for whom the profile was saved.
+   */
+  def save[A <: AuthInfo](profile: CommonSocialProfile[A])(implicit ec: ExecutionContext): Future[User] =
+    userDAO.find(profile.loginInfo).flatMap {
+      case Some(user) => // Update user with profile
+        userDAO.save(user.copy(
+          firstName = profile.firstName.get,
+          lastName = profile.lastName.get,
+          fullName = profile.fullName.get,
+          email = profile.email.get,
+          avatarURL = profile.avatarURL))
+      case None => // Insert a new user
+        userDAO.save(User(
+          userID = UUID.randomUUID(),
+          loginInfo = profile.loginInfo,
+          firstName = profile.firstName.get,
+          lastName = profile.lastName.get,
+          fullName = profile.fullName.get,
+          email = profile.email.get,
+          avatarURL = profile.avatarURL))
+    }
 
 }
