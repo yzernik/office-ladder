@@ -50,17 +50,14 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
           firstName = profile.firstName.get,
           lastName = profile.lastName.get,
           fullName = profile.fullName.get,
-          email = profile.email.get,
-          avatarURL = profile.avatarURL))
+          email = profile.email.get))
       case None => // Insert a new user
         save(User(
-          userID = UUID.randomUUID(),
           loginInfo = profile.loginInfo,
           firstName = profile.firstName.get,
           lastName = profile.lastName.get,
           fullName = profile.fullName.get,
-          email = profile.email.get,
-          avatarURL = profile.avatarURL))
+          email = profile.email.get))
     }
 
 }
