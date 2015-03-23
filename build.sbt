@@ -13,4 +13,6 @@ libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4"
 )
 
+scalacOptions += "-feature"
+
 EclipseKeys.createSrc := EclipseCreateSrc.All
