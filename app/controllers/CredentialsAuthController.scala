@@ -23,6 +23,8 @@ import utils.EnvironmentModule
  *
  * @param env The Silhouette environment.
  */
+
+/*
 object CredentialsAuthController
   extends Silhouette[User, CachedCookieAuthenticator]
   with EnvironmentModule {
@@ -64,3 +66,4 @@ object CredentialsAuthController
     }
 
 }
+*/

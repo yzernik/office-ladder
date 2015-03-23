@@ -1,5 +1,7 @@
 package models
 
+import java.util.UUID
+
 import com.mohiva.play.silhouette.core.Identity
 import com.mohiva.play.silhouette.core.LoginInfo
 
@@ -14,9 +16,13 @@ import play.api.libs.json.Json
  * @param email The email of the authenticated provider.
  */
 case class User(
+  userID: UUID,
   loginInfo: LoginInfo,
-  username: String,
-  email: String) extends Identity
+  firstName: String,
+  lastName: String,
+  fullName: String,
+  email: String,
+  avatarURL: Option[String]) extends Identity
 
 /*
  * Companion object for the station case class
