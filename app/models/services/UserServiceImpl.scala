@@ -46,14 +46,14 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
   def save[A <: AuthInfo](profile: CommonSocialProfile[A])(implicit ec: ExecutionContext): Future[User] =
     userDAO.find(profile.loginInfo).flatMap {
       case Some(user) => // Update user with profile
-        userDAO.save(user.copy(
+        save(user.copy(
           firstName = profile.firstName.get,
           lastName = profile.lastName.get,
           fullName = profile.fullName.get,
           email = profile.email.get,
           avatarURL = profile.avatarURL))
       case None => // Insert a new user
-        userDAO.save(User(
+        save(User(
           userID = UUID.randomUUID(),
           loginInfo = profile.loginInfo,
           firstName = profile.firstName.get,

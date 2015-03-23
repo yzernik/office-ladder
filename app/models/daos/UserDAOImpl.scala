@@ -39,7 +39,9 @@ class UserDAOImpl extends UserDAO {
    */
   def save(user: User) = {
     if (users.contains(user.email)) {
-      Future.failed(new UserCreationException("user with that email already exists."))
+      //Future.failed(new UserCreationException("user with that email already exists."))
+      users.update(user.email, user)
+      Future.successful(user)
     } else {
       users += (user.email -> user)
       Future.successful(user)

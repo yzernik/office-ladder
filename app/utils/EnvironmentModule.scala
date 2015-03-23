@@ -9,6 +9,7 @@ import com.mohiva.play.silhouette.core.EventBus
 import com.mohiva.play.silhouette.core.utils.PlayHTTPLayer
 
 import models.User
+import models.daos.OAuth2InfoDAO
 
 trait EnvironmentModule
   extends AuthenticatorServiceModule
@@ -20,7 +21,7 @@ trait EnvironmentModule
   lazy val httpLayer = new PlayHTTPLayer
   lazy val eventBus = EventBus()
   lazy val idGenerator = new SecureRandomIDGenerator
-  lazy val authInfoDAO = ???
+  lazy val authInfoDAO = new OAuth2InfoDAO
   lazy val passwordHasher = new BCryptPasswordHasher
   implicit lazy val env: Environment[User, CachedCookieAuthenticator] = {
     Environment[User, CachedCookieAuthenticator](
