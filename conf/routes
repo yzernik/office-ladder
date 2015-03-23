@@ -3,12 +3,12 @@
 # ~~~~
 
 # Home page
-GET    /                         controllers.MyApplication.index
-GET    /signIn                   controllers.MyApplication.signIn
-GET    /signOut                  controllers.MyApplication.signOut
+GET   /                         controllers.MyApplication.index
+GET   /signIn                   controllers.MyApplication.signIn
+GET   /signOut                  controllers.MyApplication.signOut
 
 # auth
-POST   /authenticate/:provider   controllers.SocialAuthController.authenticate(provider)
+GET   /authenticate/:provider   controllers.SocialAuthController.authenticate(provider)
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /assets/*file             controllers.Assets.at(path="/public", file)
+GET   /assets/*file             controllers.Assets.at(path="/public", file)
