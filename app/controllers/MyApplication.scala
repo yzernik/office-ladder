@@ -22,7 +22,7 @@ object MyApplication
    */
   def index = UserAwareAction { implicit request =>
     val userName = request.identity match {
-      case Some(identity) => identity.email
+      case Some(identity) => identity.fullName
       case None           => "Guest"
     }
     Ok(views.html.index(request.identity, "Hello %s".format(userName)))
