@@ -1,18 +1,16 @@
 package models.daos
 
 import scala.collection.mutable
-import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.core.LoginInfo
 
 import models.User
-import models.services.UserCreationException
-import UserDAOImpl._
 
 /**
  * Give access to the user object.
  */
 class UserDAOImpl extends UserDAO {
+  import UserDAOImpl._
 
   /**
    * Finds a user by its login info.
@@ -20,8 +18,8 @@ class UserDAOImpl extends UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo) = Future.successful(
-    users.find { case (id, user) => user.loginInfo == loginInfo }.map(_._2))
+  def find(loginInfo: LoginInfo) =
+    users.find { case (id, user) => user.loginInfo == loginInfo }.map(_._2)
 
   /**
    * Finds a user by its username.
@@ -29,7 +27,8 @@ class UserDAOImpl extends UserDAO {
    * @param username The username of the user to find.
    * @return The found user or None if no user for the given username could be found.
    */
-  def find(username: String) = Future.successful(users.get(username))
+  def find(username: String) =
+    users.get(username)
 
   /**
    * Saves a user.
@@ -39,12 +38,11 @@ class UserDAOImpl extends UserDAO {
    */
   def save(user: User) = {
     if (users.contains(user.email)) {
-      //Future.failed(new UserCreationException("user with that email already exists."))
       users.update(user.email, user)
-      Future.successful(user)
+      user
     } else {
       users += (user.email -> user)
-      Future.successful(user)
+      user
     }
   }
 }

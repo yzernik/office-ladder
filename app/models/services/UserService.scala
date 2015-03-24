@@ -20,7 +20,7 @@ trait UserService extends IdentityService[User] {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User)(implicit ec: ExecutionContext): Future[User]
+  def save(user: User): Future[User]
 
   /**
    * Saves the social profile for a user.
@@ -30,7 +30,7 @@ trait UserService extends IdentityService[User] {
    * @param profile The social profile to save.
    * @return The user for whom the profile was saved.
    */
-  def save[A <: AuthInfo](profile: CommonSocialProfile[A])(implicit ec: ExecutionContext): Future[User]
+  def save[A <: AuthInfo](profile: CommonSocialProfile[A]): Future[User]
 
 }
 

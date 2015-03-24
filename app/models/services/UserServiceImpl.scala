@@ -19,13 +19,16 @@ import models.daos.UserDAO
  */
 class UserServiceImpl(userDAO: UserDAO) extends UserService {
 
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   /**
    * Retrieves a user that matches the specified login info.
    *
    * @param loginInfo The login info to retrieve a user.
    * @return The retrieved user or None if no user could be retrieved for the given login info.
    */
-  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.find(loginInfo)
+  def retrieve(loginInfo: LoginInfo): Future[Option[User]] =
+    Future { userDAO.find(loginInfo) }
 
   /**
    * Saves a user.
@@ -33,7 +36,8 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User)(implicit ec: ExecutionContext) = userDAO.save(user)
+  def save(user: User) =
+    Future { userDAO.save(user) }
 
   /**
    * Saves the social profile for a user.
@@ -43,8 +47,8 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
    * @param profile The social profile to save.
    * @return The user for whom the profile was saved.
    */
-  def save[A <: AuthInfo](profile: CommonSocialProfile[A])(implicit ec: ExecutionContext): Future[User] =
-    userDAO.find(profile.loginInfo).flatMap {
+  def save[A <: AuthInfo](profile: CommonSocialProfile[A]): Future[User] =
+    userDAO.find(profile.loginInfo) match {
       case Some(user) => // Update user with profile
         save(user.copy(
           firstName = profile.firstName.get,

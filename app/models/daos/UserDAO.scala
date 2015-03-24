@@ -17,7 +17,7 @@ trait UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo): Future[Option[User]]
+  def find(loginInfo: LoginInfo): Option[User]
 
   /**
    * Finds a user by its username.
@@ -25,7 +25,7 @@ trait UserDAO {
    * @param username The username of the user to find.
    * @return The found user or None if no user for the given username could be found.
    */
-  def find(username: String): Future[Option[User]]
+  def find(username: String): Option[User]
 
   /**
    * Saves a user.
@@ -33,5 +33,5 @@ trait UserDAO {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User): Future[User]
+  def save(user: User): User
 }
