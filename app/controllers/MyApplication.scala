@@ -1,19 +1,27 @@
 package controllers
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import org.joda.time.DateTime
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.LogoutEvent
 import com.mohiva.play.silhouette.core.Silhouette
 
+import forms.CreateLadderForm
 import forms.SignInForm
-import forms.SignUpForm
+import models.Ladder
+import models.Ladder.ladderFormats
 import models.User
+import play.api.libs.json.Json
 import utils.EnvironmentModule
 
 object MyApplication
   extends Silhouette[User, CachedCookieAuthenticator]
   with EnvironmentModule {
+
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   val adminEmail = play.Play.application.configuration.getString("admin.email")
 
@@ -59,6 +67,28 @@ object MyApplication
    */
   def adminPage = SecuredAction(IsAdmin(adminEmail)) { implicit request =>
     Ok("Welcome to the admin page.")
+  }
+
+  def ladders = SecuredAction.async { implicit request =>
+    val domain = request.identity.email.split('@')(1)
+    ladderService.retrieveByDomain(domain).map {
+      ldrs => Ok(Json.toJson(ldrs))
+    }
+  }
+
+  /**
+   * Handles the create ladder action.
+   *
+   * @return The result to display.
+   */
+  def createLadder = SecuredAction(IsAdmin(adminEmail)).async { implicit request =>
+    CreateLadderForm.form.bindFromRequest.fold(
+      form => Future.successful(BadRequest("bad input data.")),
+      data => {
+        val userEmail = request.identity.email
+        val ladder = new Ladder(None, data.name, data.domain, userEmail, DateTime.now)
+        ladderService.save(ladder).map { res => Ok }
+      })
   }
 
 }

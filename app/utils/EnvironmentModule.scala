@@ -15,7 +15,8 @@ trait EnvironmentModule
   extends AuthenticatorServiceModule
   with UserServiceModule
   with AuthInfoServiceModule
-  with SocialProviderModule {
+  with SocialProviderModule
+  with LadderServiceModule {
 
   lazy val cacheLayer = new PlayCacheLayer
   lazy val httpLayer = new PlayHTTPLayer
