@@ -25,7 +25,7 @@ trait UserDAO {
    * @param username The username of the user to find.
    * @return The found user or None if no user for the given username could be found.
    */
-  def find(username: String): Option[User]
+  def find(email: String): Option[User]
 
   /**
    * Saves a user.

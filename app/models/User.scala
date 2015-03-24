@@ -43,7 +43,7 @@ object User {
 }
 
 // Definition of the Users table
-class Suppliers(tag: Tag) extends Table[User](tag, "users") {
+class Users(tag: Tag) extends Table[User](tag, "users") {
 
   def email = column[String]("email", O.PrimaryKey) // This is the primary key column
   def firstName = column[String]("firstname")
