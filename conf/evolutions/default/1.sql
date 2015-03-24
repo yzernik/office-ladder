@@ -8,7 +8,8 @@ CREATE TABLE users (
     lastname        varchar(255) NOT NULL,
     fullname        varchar(255) NOT NULL,
     providername    varchar(255) NOT NULL,
-    providerkey     varchar(255) NOT NULL
+    providerkey     varchar(255) NOT NULL,
+    created         timestamp NOT NULL
       
 );
 

@@ -1,9 +1,9 @@
 package models.services
 
-import java.util.UUID
-
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import org.joda.time.DateTime
 
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
@@ -58,6 +58,7 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
       case None => // Insert a new user
         save(User(
           loginInfo = profile.loginInfo,
+          created = DateTime.now,
           firstName = profile.firstName.get,
           lastName = profile.lastName.get,
           fullName = profile.fullName.get,

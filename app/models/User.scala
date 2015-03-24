@@ -1,17 +1,13 @@
 package models
 
-import java.util.UUID
+import scala.slick.lifted.ProvenShape.proveShapeOf
+
 import com.mohiva.play.silhouette.core.Identity
 import com.mohiva.play.silhouette.core.LoginInfo
-import play.api.libs.json.Json
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import org.joda.time.DateTime
+import com.github.tototoshi.slick.JdbcJodaSupport._
 
 import play.api.db.slick.Config.driver.simple._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 /**
  * The user object.
@@ -22,18 +18,14 @@ case class User(
   firstName: String,
   lastName: String,
   fullName: String,
-  email: String) extends Identity
+  email: String,
+  created: DateTime) extends Identity
 
 /*
- * Companion object for the station case class
+ * Companion object for the user case class
 */
 object User {
-  import play.api.libs.concurrent.Execution.Implicits._
   import play.api.libs.json.Json
-  import play.api.data._
-  import play.api.data.Forms._
-  import play.api.libs.json._
-  import play.api.libs.functional.syntax._
 
   // create the formats object for LoginInfo.
   implicit val loginInfoFormats = Json.format[LoginInfo]
@@ -46,24 +38,26 @@ object User {
 class Users(tag: Tag) extends Table[User](tag, "users") {
 
   def email = column[String]("email", O.PrimaryKey) // This is the primary key column
+  def providerName = column[String]("providername")
+  def providerKey = column[String]("providerkey")
   def firstName = column[String]("firstname")
   def lastName = column[String]("lastname")
   def fullName = column[String]("fullname")
-  def providerName = column[String]("providername")
-  def providerKey = column[String]("providerkey")
+  def created = column[DateTime]("created")
 
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = (providerName, providerKey, email, firstName, lastName, fullName) <> ((mapRow _).tupled, unMapRow _)
+  def * = (email, providerName, providerKey, firstName, lastName, fullName, created) <> ((mapRow _).tupled, unMapRow _)
 
   private def mapRow(
+    email: String,
     providerName: String,
     providerKey: String,
-    email: String,
     firstName: String,
     lastName: String,
-    fullName: String): User = {
+    fullName: String,
+    created: DateTime): User = {
     val loginInfo = LoginInfo(providerName, providerKey)
-    User(loginInfo, firstName, lastName, fullName, email)
+    User(loginInfo, firstName, lastName, fullName, email, created)
   }
 
   private def unMapRow(user: User) = {
@@ -73,8 +67,9 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
     val lastName = user.lastName
     val fullName = user.fullName
     val email = user.email
+    val created = user.created
 
-    val tuple = (providerName, providerKey, firstName, lastName, fullName, email)
+    val tuple = (email, providerName, providerKey, firstName, lastName, fullName, created)
     Some(tuple)
   }
 
