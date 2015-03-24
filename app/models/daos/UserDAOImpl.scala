@@ -47,7 +47,9 @@ class UserDAOImpl extends UserDAO {
    * @return The saved user.
    */
   def save(user: User) = DB.withSession { implicit session =>
-    users.update(user)
+    if (find(user.email).isDefined) {
+      users.insert(user)
+    }
     user
   }
 }
