@@ -15,6 +15,8 @@ object MyApplication
   extends Silhouette[User, CachedCookieAuthenticator]
   with EnvironmentModule {
 
+  val adminEmail = play.Play.application.configuration.getString("admin.email")
+
   /**
    * Renders the index page.
    *
@@ -48,6 +50,15 @@ object MyApplication
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
     Future.successful(env.authenticatorService.discard(Redirect(routes.MyApplication.index)))
+  }
+
+  /**
+   * Handles the admin page action.
+   *
+   * @return The result to display.
+   */
+  def adminPage = SecuredAction(IsAdmin(adminEmail)) { implicit request =>
+    Ok("Welcome to the admin page.")
   }
 
 }

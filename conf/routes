@@ -6,6 +6,7 @@
 GET   /                         controllers.MyApplication.index
 GET   /signIn                   controllers.MyApplication.signIn
 GET   /signOut                  controllers.MyApplication.signOut
+GET   /admin                    controllers.MyApplication.adminPage
 
 # auth
 GET   /authenticate/:provider   controllers.SocialAuthController.authenticate(provider)
