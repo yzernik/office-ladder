@@ -36,7 +36,8 @@ lazy val client = (project in file("client")).settings(
     "org.scala-js" %%% "scalajs-dom" % "0.8.0",
     "com.github.japgolly.scalajs-react" %%% "core" % "0.8.2"
   ),
-  jsDependencies += "org.webjars" % "react" % "0.12.1" / "react-with-addons.js" commonJSName "React").
+  jsDependencies += "org.webjars" % "react" % "0.12.1" / "react-with-addons.js" commonJSName "React",
+  skip in packageJSDependencies := false).
   enablePlugins(ScalaJSPlugin, ScalaJSPlay)
 
 // loads the jvm project at sbt startup
