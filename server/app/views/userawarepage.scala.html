@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(identity: Option[models.User])
+@(title: String)(identity: Option[models.User])(content: Html)
 
 @base(title)(content){
 	@if(identity.isDefined){

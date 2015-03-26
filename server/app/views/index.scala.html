@@ -1,14 +1,14 @@
 @(identity: Option[models.User])
 
-@userawarepage("Office Ladder"){
+@userawarepage("Office Ladder")(identity){
 	<p>
 	@if(identity.isDefined){
-		<a href="@routes.MyApplication.signOut">Sign Out</a>
+		<p>Hello!</p>
 	} else {
-		<a href="@routes.MyApplication.signIn">Sign In</a>
+		<h2>Sign in to start</h2>
 	}
 	</p>
 
     Scala.js shouts out: <em id="scalajsShoutOut"></em>
 
-}(identity)
+}
