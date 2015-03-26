@@ -5,12 +5,13 @@ name := """office-ladder"""
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
-lazy val clients = Seq()
+lazy val clients = Seq(client)
 lazy val scalaV = "2.11.5"
 
 lazy val server = (project in file("server")).settings(
   scalaVersion := scalaV,
-  pipelineStages := Seq(scalaJSProd, gzip),
+  scalaJSProjects := clients,
+  pipelineStages := Seq(scalaJSProd),
   libraryDependencies ++= Seq(
     jdbc,
     anorm,
@@ -25,6 +26,16 @@ lazy val server = (project in file("server")).settings(
   EclipseKeys.skipParents in ThisBuild := false).
   enablePlugins(PlayScala).
   aggregate(clients.map(projectToRef): _*)
+
+lazy val client = (project in file("client")).settings(
+  scalaVersion := scalaV,
+  persistLauncher := true,
+  persistLauncher in Test := false,
+  unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
+  libraryDependencies ++= Seq(
+    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+  )).
+  enablePlugins(ScalaJSPlugin, ScalaJSPlay)
 
 // loads the jvm project at sbt startup
 onLoad in Global := (Command.process("project server", _: State)) compose (onLoad in Global).value
