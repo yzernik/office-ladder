@@ -1,7 +1,6 @@
 @(signInForm: Form[com.mohiva.play.silhouette.core.providers.Credentials])(implicit env: com.mohiva.play.silhouette.core.Environment[User, _], request: RequestHeader)
 
 @import com.mohiva.play.silhouette.core.providers._
-@import bootstrap._
 
 @userawarepage("Sign In")(None) {
     @request.flash.get("error").map { msg =>
