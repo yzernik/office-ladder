@@ -29,7 +29,7 @@ class Ladders(tag: Tag) extends Table[Ladder](tag, "ladders") {
   def name = column[String]("name")
   def domain = column[String]("domain")
   def creator = column[String]("creator")
-  def created = column[DateTime]("time_created")
+  def created = column[DateTime]("created")
 
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id.?, name, domain, creator, created) <> ((Ladder.apply _).tupled, Ladder.unapply _)
