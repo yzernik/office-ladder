@@ -10,7 +10,6 @@ import com.mohiva.play.silhouette.core.LogoutEvent
 import com.mohiva.play.silhouette.core.Silhouette
 
 import forms.CreateLadderForm
-import forms.SignInForm
 import models.Ladder
 import models.Ladder.ladderFormats
 import models.User
@@ -46,7 +45,7 @@ object MyApplication
   def signIn = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.MyApplication.index))
-      case None       => Future.successful(Ok(views.html.signIn(SignInForm.form)))
+      case None       => Future.successful(Ok(views.html.signIn()))
     }
   }
 

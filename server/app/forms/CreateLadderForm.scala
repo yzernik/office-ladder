@@ -21,9 +21,8 @@ object CreateLadderForm {
    * The ladder form data.
    * Partial data for creating a new ladder.
    *
-   * @param username The username of a user.
-   * @param email The email of the user.
-   * @param password The password of the user.
+   * @param name The name of the new ladder.
+   * @param domain The email domain of the new ladder.
    */
   case class LadderData(
     name: String,
