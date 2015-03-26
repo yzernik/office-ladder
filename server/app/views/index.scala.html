@@ -1,7 +1,6 @@
-@(identity: Option[models.User], message: String)
+@(identity: Option[models.User])
 
-@main("Welcome to Play") {
-
+@userawarepage("Office Ladder"){
 	<p>
 	@if(identity.isDefined){
 		<a href="@routes.MyApplication.signOut">Sign Out</a>
@@ -10,8 +9,6 @@
 	}
 	</p>
 
-    @message
-
     Scala.js shouts out: <em id="scalajsShoutOut"></em>
 
-}
+}(identity)

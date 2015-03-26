@@ -1,0 +1,13 @@
+@(title: String)(content: Html)(identity: Option[models.User])
+
+@base(title)(content){
+	@if(identity.isDefined){
+		<a href="@routes.MyApplication.signOut">
+			<button class="btn btn-danger">Sign Out</button>
+		</a>
+	} else {
+		<a href="@routes.MyApplication.signIn">
+			<button class="btn btn-success">Sign in</button>
+		</a>
+	}
+}
