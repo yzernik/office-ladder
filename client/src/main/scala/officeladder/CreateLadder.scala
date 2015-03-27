@@ -1,0 +1,5 @@
+package officeladder
+
+class CreateLadder {
+
+}

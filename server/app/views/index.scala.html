@@ -8,12 +8,10 @@
 @athorizedcontent(id: models.User) = {
 	<p>Hello @id.firstName!</p>
 
-	<p>
-    Scala.js shouts out: <em id="scalajsShoutOut"></em>
+    <div id="scalajsShoutOut"></div>
     
 	<script src="@routes.Assets.at("client-jsdeps.js")" type="text/javascript"></script>
 	@playscalajs.html.scripts("/assets", projectName = "client")
-	</p>
 
 }
 
