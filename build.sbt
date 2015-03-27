@@ -4,7 +4,6 @@ name := """office-ladder"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
 lazy val clients = Seq(client)
 lazy val scalaV = "2.11.5"
 
