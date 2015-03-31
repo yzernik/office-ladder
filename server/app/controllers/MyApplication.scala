@@ -5,9 +5,9 @@ import scala.concurrent.Future
 
 import org.joda.time.DateTime
 
-import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import com.mohiva.play.silhouette.core.LogoutEvent
-import com.mohiva.play.silhouette.core.Silhouette
+import com.mohiva.play.silhouette.api.LogoutEvent
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 
 import forms.CreateLadderForm
 import models.Ladder
@@ -17,7 +17,7 @@ import play.api.libs.json.Json
 import utils.EnvironmentModule
 
 object MyApplication
-  extends Silhouette[User, CachedCookieAuthenticator]
+  extends Silhouette[User, SessionAuthenticator]
   with EnvironmentModule {
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -55,8 +55,10 @@ object MyApplication
    * @return The result to display.
    */
   def signOut = SecuredAction.async { implicit request =>
+    val result = Future.successful(Redirect(routes.MyApplication.index()))
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-    Future.successful(env.authenticatorService.discard(Redirect(routes.MyApplication.index)))
+
+    request.authenticator.discard(result)
   }
 
   /**

@@ -1,13 +1,11 @@
 package models.daos
 
-import com.mohiva.play.silhouette.core.LoginInfo
+import com.mohiva.play.silhouette.api.LoginInfo
 
-import play.api.db.slick.Config.driver.simple._
-import models.Users
+import models._
 import play.api.Play.current
+import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
-
-import models.User
 
 /**
  * Give access to the user object.

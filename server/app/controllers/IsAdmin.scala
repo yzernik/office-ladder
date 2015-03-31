@@ -1,6 +1,6 @@
 package controllers
 
-import com.mohiva.play.silhouette.core.Authorization
+import com.mohiva.play.silhouette.api.Authorization
 
 import models.User
 import play.api.i18n.Lang
