@@ -1,5 +1,6 @@
 package models.services
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import models.Ladder

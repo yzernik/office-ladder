@@ -11,10 +11,11 @@ lazy val server = (project in file("server")).settings(
   scalaVersion := scalaV,
   scalaJSProjects := clients,
   pipelineStages := Seq(scalaJSProd),
+  resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/",
   libraryDependencies ++= Seq(
     jdbc,
     anorm,
-    "com.mohiva" %% "play-silhouette" % "1.0",
+    "com.mohiva" %% "play-silhouette" % "2.0",
     "com.typesafe.play" %% "play-slick" % "0.8.1",
     "org.slf4j" % "slf4j-nop" % "1.6.4",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",

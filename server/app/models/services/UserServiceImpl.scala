@@ -5,9 +5,8 @@ import scala.concurrent.Future
 
 import org.joda.time.DateTime
 
-import com.mohiva.play.silhouette.core.LoginInfo
-import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
-import com.mohiva.play.silhouette.core.services.AuthInfo
+import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
 
 import models.User
 import models.daos.UserDAO
@@ -47,7 +46,7 @@ class UserServiceImpl(userDAO: UserDAO) extends UserService {
    * @param profile The social profile to save.
    * @return The user for whom the profile was saved.
    */
-  def save[A <: AuthInfo](profile: CommonSocialProfile[A]): Future[User] =
+  def save(profile: CommonSocialProfile): Future[User] =
     userDAO.find(profile.loginInfo) match {
       case Some(user) => // Update user with profile
         save(user.copy(

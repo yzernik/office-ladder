@@ -2,22 +2,23 @@ package controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import org.joda.time.DateTime
-
-import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import com.mohiva.play.silhouette.core.LogoutEvent
-import com.mohiva.play.silhouette.core.Silhouette
-
+import com.mohiva.play.silhouette.api.LogoutEvent
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import forms.CreateLadderForm
 import models.Ladder
 import models.Ladder.ladderFormats
 import models.User
 import play.api.libs.json.Json
 import utils.EnvironmentModule
+import play.api.mvc.ActionTransformer
+import play.api.mvc.Request
+import com.mohiva.play.silhouette.api.Identity
+import play.api.mvc.WrappedRequest
 
 object MyApplication
-  extends Silhouette[User, CachedCookieAuthenticator]
+  extends Silhouette[User, SessionAuthenticator]
   with EnvironmentModule {
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -55,8 +56,10 @@ object MyApplication
    * @return The result to display.
    */
   def signOut = SecuredAction.async { implicit request =>
+    val result = Future.successful(Redirect(routes.MyApplication.index()))
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-    Future.successful(env.authenticatorService.discard(Redirect(routes.MyApplication.index)))
+
+    request.authenticator.discard(result)
   }
 
   /**
@@ -89,5 +92,20 @@ object MyApplication
         ladderService.save(ladder).map { res => Ok }
       })
   }
+
+  object FetchLadders extends ActionTransformer[SecuredRequest, LaddersRequest] {
+    def transform[A](request: SecuredRequest[A]) = {
+      val id = request.identity
+      val domain = request.identity.email.split('@')(1)
+      ladderService.retrieveByDomain(domain).map { ldrs =>
+        LaddersRequest(id, ldrs, request)
+      }
+    }
+  }
+
+  case class LaddersRequest[A](
+    val user: Identity,
+    val notifications: List[Ladder],
+    request: Request[A]) extends WrappedRequest(request)
 
 }

@@ -1,16 +1,10 @@
 package models.daos
 
-import scala.collection.mutable
-
-import com.mohiva.play.silhouette.core.LoginInfo
-
-import play.api.db.slick.Config.driver.simple._
-import models.Users
-import play.api.Play.current
-import play.api.db.slick.DB
-
 import models.Ladder
 import models.Ladders
+import play.api.Play.current
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 class LadderDAOImpl extends LadderDAO {
 

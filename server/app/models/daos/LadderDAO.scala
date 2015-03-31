@@ -1,9 +1,5 @@
 package models.daos
 
-import scala.concurrent.Future
-
-import com.mohiva.play.silhouette.core.LoginInfo
-
 import models.Ladder
 
 /**

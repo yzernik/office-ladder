@@ -2,8 +2,7 @@ package models
 
 import scala.slick.lifted.ProvenShape.proveShapeOf
 
-import com.mohiva.play.silhouette.core.Identity
-import com.mohiva.play.silhouette.core.LoginInfo
+import com.mohiva.play.silhouette.api._
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.JdbcJodaSupport._
 
