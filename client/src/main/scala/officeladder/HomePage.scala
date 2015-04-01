@@ -9,7 +9,7 @@ object HomePage {
       <.h2("Office Ladder"),
       <.div(
         ^.className := "col-lg-4",
-        TodoExample.content),
+        Ladders.content),
       <.div(
         ^.className := "col-lg-4",
         "MIDDLE"),
