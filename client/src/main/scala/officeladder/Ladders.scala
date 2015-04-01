@@ -1,22 +1,30 @@
 package officeladder
 
+import scala.concurrent.Future
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+import org.scalajs.dom.ext._
+
 import japgolly.scalajs.react._, vdom.prefix_<^._
-import scalajs.js
+import upickle.SeqishR
+import upickle.read
 
-import org.scalajs.jquery.jQuery
-
-import models._
+import models.Ladder
 
 object Ladders {
 
-  case class State(ladders: List[Ladder])
+  case class State(ladders: List[Ladder], newladder: NewLadder)
+  case class NewLadder(name: String, domain: String)
+
+  def fetchLadders: Future[List[Ladder]] = {
+    val url = org.scalajs.dom.window.location + "ladders"
+    Ajax.get(url).map { res =>
+      read[List[Ladder]](res.responseText)
+    }
+  }
 
   class Backend($: BackendScope[Unit, State]) {
     // add some methods..
-
-    def fetchLadders() =
-
-      $.modState(s => State(Nil))
   }
 
   val LaddersList = ReactComponentB[List[Ladder]]("LaddersList")
@@ -27,37 +35,19 @@ object Ladders {
     .build
 
   val LaddersApp = ReactComponentB[Unit]("TodoApp")
-    .initialState(State(Nil))
+    .initialState(State(Nil, NewLadder("", "")))
     .backend(new Backend(_))
     .render((_, S, B) =>
       <.div(
         <.h3("Ladders"),
         LaddersList(S.ladders)))
     .componentDidMount(scope => {
-      // make ajax call here to get pics from instagram
-      import scalajs.js.Dynamic.{ global => g }
-      val url = "https://localhost:9000/ladders"
-
-      val fn = (result: js.Dynamic) => {
-        if (result != js.undefined && result.data != js.undefined) {
-          val data = result.data.asInstanceOf[js.Array[js.Dynamic]]
-          val ladders = data.toList.map(item => Ladder(item.id.toString.toLong, item.name.toString, item.domain.toString, item.creator.toString, item.created.toString.toLong))
-          scope.modState(_ => State(ladders))
-        }
+      fetchLadders.onSuccess {
+        case ladders =>
+          org.scalajs.dom.alert("num ladders: " + ladders.size)
+          scope.modState(_ => State(ladders, NewLadder("", "")))
       }
 
-      jQuery.get(url, Nil, fn, Nil)
-
-      /*
-      g.jsonp(url, (result: js.Dynamic) => {
-        if (result != js.undefined && result.data != js.undefined) {
-          val data = result.data.asInstanceOf[js.Array[js.Dynamic]]
-          val ladders = data.toList.map(item => Ladder(item.id.toString.toLong, item.name.toString, item.domain.toString, item.creator.toString, item.created.toString.toLong))
-          scope.modState(_ => State(ladders))
-        }
-      })
-      * 
-      */
     }).buildU
 
   val content = LaddersApp()

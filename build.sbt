@@ -35,7 +35,8 @@ lazy val client = (project in file("client")).settings(
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.8.0",
     "com.github.japgolly.scalajs-react" %%% "core" % "0.8.2",
-    "be.doeraene" %%% "scalajs-jquery" % "0.8.0"
+    "be.doeraene" %%% "scalajs-jquery" % "0.8.0",
+    "com.lihaoyi" %%% "upickle" % "0.2.8"
   ),
   jsDependencies += "org.webjars" % "react" % "0.12.1" / "react-with-addons.js" commonJSName "React",
   skip in packageJSDependencies := false).
