@@ -13,7 +13,7 @@ import models.Ladder
 
 object Ladders {
 
-  case class State(ladders: List[Ladder], newladder: NewLadder)
+  case class State(ladders: List[Ladder], name: String, domain: String)
   case class NewLadder(name: String, domain: String)
 
   def fetchLadders: Future[List[Ladder]] = {
@@ -24,7 +24,15 @@ object Ladders {
   }
 
   class Backend($: BackendScope[Unit, State]) {
-    // add some methods..
+    def onChangeName(e: ReactEventI) =
+      $.modState(_.copy(name = e.target.value))
+    def onChangeDomain(e: ReactEventI) =
+      $.modState(_.copy(domain = e.target.value))
+    def handleSubmit(e: ReactEventI) = {
+      e.preventDefault()
+      $.modState(s => State(s.ladders, "", ""))
+    }
+
   }
 
   val LaddersList = ReactComponentB[List[Ladder]]("LaddersList")
@@ -34,18 +42,38 @@ object Ladders {
     })
     .build
 
+  val NewLadderForm = ReactComponentB[(State, Backend)]("NewLadderForm")
+    .render(P => {
+      val (s, b) = P
+      <.form(^.onSubmit ==> b.handleSubmit,
+        <.p("Ladder name"),
+        <.input(^.onChange ==> b.onChangeName, ^.value := s.name, ^.name := "name"),
+        <.br,
+        <.p("Ladder domain"),
+        <.input(^.onChange ==> b.onChangeDomain, ^.value := s.domain, ^.name := "domain"),
+        <.br,
+        <.button("Add new ladder"))
+    })
+    .build
+
   val LaddersApp = ReactComponentB[Unit]("TodoApp")
-    .initialState(State(Nil, NewLadder("", "")))
+    .initialState(State(Nil, "", ""))
     .backend(new Backend(_))
     .render((_, S, B) =>
       <.div(
-        <.h3("Ladders"),
-        LaddersList(S.ladders)))
+        <.div(
+          ^.className := "col-lg-6",
+          <.h3("Ladders"),
+          LaddersList(S.ladders)),
+        <.div(
+          ^.className := "col-lg-6",
+          <.h3("Create a new ladder"),
+          NewLadderForm((S, B)))))
     .componentDidMount(scope => {
       fetchLadders.onSuccess {
         case ladders =>
           org.scalajs.dom.alert("num ladders: " + ladders.size)
-          scope.modState(_ => State(ladders, NewLadder("", "")))
+          scope.modState(_ => State(ladders, "", ""))
       }
 
     }).buildU

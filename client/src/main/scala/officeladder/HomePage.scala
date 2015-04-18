@@ -8,13 +8,7 @@ object HomePage {
     <.div(
       <.h2("Office Ladder"),
       <.div(
-        ^.className := "col-lg-4",
-        Ladders.content),
-      <.div(
-        ^.className := "col-lg-4",
-        "MIDDLE"),
-      <.div(
-        ^.className := "col-lg-4",
-        "RIGHT"))
+        ^.className := "col-lg-8",
+        Ladders.content))
 
 }
