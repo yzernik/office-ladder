@@ -21,7 +21,7 @@ trait LadderDAO {
    * @param email domain The email of the ladders to find.
    * @return The found ladders for the given domain.
    */
-  def find(domain: String): List[Ladder]
+  def find(domain: String, onlyActive: Boolean): List[Ladder]
 
   /**
    * Saves a ladder.

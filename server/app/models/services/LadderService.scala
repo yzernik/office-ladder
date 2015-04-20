@@ -28,6 +28,6 @@ trait LadderService {
    * @param domain The domain to retrieve ladders.
    * @return The retrieved ladders for the given domain.
    */
-  def retrieveByDomain(domain: String): Future[List[Ladder]]
+  def retrieveByDomain(domain: String, onlyActive: Boolean = true): Future[List[Ladder]]
 
 }

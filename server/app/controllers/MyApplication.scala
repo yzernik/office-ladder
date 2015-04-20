@@ -91,7 +91,7 @@ object MyApplication
       data => {
         val userEmail = request.identity.email
         val domain = request.identity.email.split('@')(1)
-        val ladder = new Ladder(None, data.name, domain, userEmail, DateTime.now)
+        val ladder = new Ladder(None, data.name, domain, false, userEmail, DateTime.now)
         ladderService.save(ladder).map { ldr =>
           Ok(Json.toJson(ldr))
         }
