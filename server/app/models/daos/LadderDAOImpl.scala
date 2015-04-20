@@ -19,8 +19,8 @@ class LadderDAOImpl extends LadderDAO {
   }
 
   def save(ladder: Ladder) = DB.withSession { implicit session =>
-    ladders.insert(ladder)
-    ladder
+    val newId = (ladders returning ladders.map(_.id)).insert(ladder)
+    ladder.copy(id = Some(newId))
   }
 
 }

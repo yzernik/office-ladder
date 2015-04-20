@@ -1,7 +1,7 @@
 package models
 
-case class Ladder(id: Long,
+case class Ladder(id: Int,
                   name: String,
                   domain: String,
                   creator: String,
-                  created: Long)
+                  created: Int)

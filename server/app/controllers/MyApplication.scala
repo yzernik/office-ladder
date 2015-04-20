@@ -17,6 +17,8 @@ import play.api.mvc.Request
 import com.mohiva.play.silhouette.api.Identity
 import play.api.mvc.WrappedRequest
 
+import models.Ladder.ladderFormats
+
 object MyApplication
   extends Silhouette[User, SessionAuthenticator]
   with EnvironmentModule {
@@ -83,13 +85,16 @@ object MyApplication
    *
    * @return The result to display.
    */
-  def createLadder = SecuredAction(IsAdmin(adminEmail)).async { implicit request =>
+  def createLadder = SecuredAction.async { implicit request =>
     CreateLadderForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest("bad input data.")),
       data => {
         val userEmail = request.identity.email
-        val ladder = new Ladder(None, data.name, data.domain, userEmail, DateTime.now)
-        ladderService.save(ladder).map { res => Ok }
+        val domain = request.identity.email.split('@')(1)
+        val ladder = new Ladder(None, data.name, domain, userEmail, DateTime.now)
+        ladderService.save(ladder).map { ldr =>
+          Ok(Json.toJson(ldr))
+        }
       })
   }
 

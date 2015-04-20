@@ -27,6 +27,9 @@ lazy val server = (project in file("server")).settings(
   enablePlugins(PlayScala).
   aggregate(clients.map(projectToRef): _*)
 
+def macroParadisePlugin =
+  compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+
 lazy val client = (project in file("client")).settings(
   scalaVersion := scalaV,
   persistLauncher := true,
@@ -34,10 +37,15 @@ lazy val client = (project in file("client")).settings(
   unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.8.0",
-    "com.github.japgolly.scalajs-react" %%% "core" % "0.8.2",
+    "com.github.japgolly.fork.monocle" %%% "monocle-macro" % "1.1.0",
+    "com.github.japgolly.scalajs-react" %%% "core" % "0.8.3",
+    "com.github.japgolly.scalajs-react" %%% "ext-scalaz71" % "0.8.3",
+    "com.github.japgolly.scalajs-react" %%% "ext-monocle" % "0.8.3",
+    "com.github.japgolly.scalajs-react" %%% "extra" % "0.8.3",
     "be.doeraene" %%% "scalajs-jquery" % "0.8.0",
     "com.lihaoyi" %%% "upickle" % "0.2.8"
   ),
+  addCompilerPlugin(macroParadisePlugin),
   jsDependencies += "org.webjars" % "react" % "0.12.1" / "react-with-addons.js" commonJSName "React",
   skip in packageJSDependencies := false).
   enablePlugins(ScalaJSPlugin, ScalaJSPlay)

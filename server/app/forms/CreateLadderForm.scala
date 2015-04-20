@@ -14,8 +14,7 @@ object CreateLadderForm {
    */
   val form = Form(
     mapping(
-      "name" -> nonEmptyText,
-      "domain" -> nonEmptyText)(LadderData.apply)(LadderData.unapply))
+      "name" -> nonEmptyText)(LadderData.apply)(LadderData.unapply))
 
   /**
    * The ladder form data.
@@ -25,8 +24,7 @@ object CreateLadderForm {
    * @param domain The email domain of the new ladder.
    */
   case class LadderData(
-    name: String,
-    domain: String)
+    name: String)
 
 }
 
