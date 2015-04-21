@@ -14,8 +14,9 @@ import models.Ladder
 object Ladders {
 
   @Lenses
-  case class State(ladders: List[Ladder], name: String)
+  case class State(ladders: List[Ladder], newLadder: NewLadder)
 
+  @Lenses
   case class NewLadder(name: String)
 
   def fetchLadders: Future[List[Ladder]] = {
@@ -35,17 +36,14 @@ object Ladders {
 
   case class Backend($: BackendScope[Unit, State]) {
 
-    def onChangeName(e: ReactEventI) =
-      $.modState(_.copy(name = e.target.value))
-
     def handleSubmit(e: ReactEventI) = {
       e.preventDefault()
-      val ldr = NewLadder($.state.name)
+      val ldr = $.state.newLadder
       createLadder(ldr).onComplete {
         case Success(res) => org.scalajs.dom.alert("New ladder will be created on approval from administrator.")
         case Failure(t)   => org.scalajs.dom.alert("error: " + t.getMessage)
       }
-      $.modState(s => State(s.ladders, ""))
+      $.modState(s => State(s.ladders, NewLadder("")))
     }
 
   }
@@ -70,7 +68,8 @@ object Ladders {
   val NewLadderForm = ReactComponentB[(State, Backend)]("NewLadderForm")
     .render(P => {
       val (s, b) = P
-      val nameEV = ExternalVar.state(b.$.focusStateL(State.name))
+      val lens = State.newLadder ^|-> NewLadder.name
+      val nameEV = ExternalVar.state(b.$.focusStateL(lens))
       <.form(^.onSubmit ==> b.handleSubmit,
         <.label("New ladder name:", InputChanger(nameEV)),
         <.br,
@@ -79,7 +78,7 @@ object Ladders {
     .build
 
   val LaddersApp = ReactComponentB[Unit]("TodoApp")
-    .initialState(State(Nil, ""))
+    .initialState(State(Nil, NewLadder("")))
     .backend(new Backend(_))
     .render((_, S, B) =>
       <.div(
@@ -94,7 +93,7 @@ object Ladders {
     .componentDidMount(scope => {
       fetchLadders.onSuccess {
         case ladders =>
-          scope.modState(_ => State(ladders, ""))
+          scope.modState(_ => State(ladders, NewLadder("")))
       }
 
     }).buildU
