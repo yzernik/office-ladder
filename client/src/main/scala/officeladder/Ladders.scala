@@ -13,7 +13,9 @@ import models.Ladder
 
 object Ladders {
 
+  @Lenses
   case class State(ladders: List[Ladder], name: String)
+
   case class NewLadder(name: String)
 
   def fetchLadders: Future[List[Ladder]] = {
@@ -31,7 +33,7 @@ object Ladders {
     }
   }
 
-  class Backend($: BackendScope[Unit, State]) {
+  case class Backend($: BackendScope[Unit, State]) {
 
     def onChangeName(e: ReactEventI) =
       $.modState(_.copy(name = e.target.value))
@@ -55,18 +57,7 @@ object Ladders {
     })
     .build
 
-  val NewLadderForm = ReactComponentB[(State, Backend)]("NewLadderForm")
-    .render(P => {
-      val (s, b) = P
-      <.form(^.onSubmit ==> b.handleSubmit,
-        <.p("Ladder name"),
-        <.input(^.onChange ==> b.onChangeName, ^.value := s.name, ^.name := "name"),
-        <.br,
-        <.button("Add new ladder"))
-    })
-    .build
-
-  val InputChanger = ReactComponentB[ExternalVar[String]]("Name changer")
+  val InputChanger = ReactComponentB[ExternalVar[String]]("Input changer")
     .render { evar =>
       def updateName = (event: ReactEventI) => evar.set(event.target.value)
       <.input(
@@ -74,6 +65,17 @@ object Ladders {
         ^.value := evar.value,
         ^.onChange ~~> updateName)
     }
+    .build
+
+  val NewLadderForm = ReactComponentB[(State, Backend)]("NewLadderForm")
+    .render(P => {
+      val (s, b) = P
+      val nameEV = ExternalVar.state(b.$.focusStateL(State.name))
+      <.form(^.onSubmit ==> b.handleSubmit,
+        <.label("New ladder name:", InputChanger(nameEV)),
+        <.br,
+        <.button("Create new ladder"))
+    })
     .build
 
   val LaddersApp = ReactComponentB[Unit]("TodoApp")
