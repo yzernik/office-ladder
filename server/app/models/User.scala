@@ -18,7 +18,10 @@ case class User(
   lastName: String,
   fullName: String,
   email: String,
-  created: DateTime) extends Identity
+  created: DateTime) extends Identity {
+
+  def domain = email.split('@')(1)
+}
 
 /*
  * Companion object for the user case class

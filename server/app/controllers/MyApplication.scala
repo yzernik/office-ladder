@@ -74,7 +74,7 @@ object MyApplication
   }
 
   def ladders = SecuredAction.async { implicit request =>
-    val domain = request.identity.email.split('@')(1)
+    val domain = request.identity.domain
     ladderService.retrieveByDomain(domain).map {
       ldrs => Ok(Json.toJson(ldrs))
     }
@@ -90,7 +90,7 @@ object MyApplication
       form => Future.successful(BadRequest("bad input data.")),
       data => {
         val userEmail = request.identity.email
-        val domain = request.identity.email.split('@')(1)
+        val domain = request.identity.domain
         val ladder = new Ladder(None, data.name, domain, false, userEmail, DateTime.now)
         ladderService.save(ladder).map { ldr =>
           Ok(Json.toJson(ldr))
@@ -101,7 +101,7 @@ object MyApplication
   object FetchLadders extends ActionTransformer[SecuredRequest, LaddersRequest] {
     def transform[A](request: SecuredRequest[A]) = {
       val id = request.identity
-      val domain = request.identity.email.split('@')(1)
+      val domain = id.domain
       ladderService.retrieveByDomain(domain).map { ldrs =>
         LaddersRequest(id, ldrs, request)
       }
