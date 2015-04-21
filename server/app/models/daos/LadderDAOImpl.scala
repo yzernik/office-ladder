@@ -16,7 +16,8 @@ class LadderDAOImpl extends LadderDAO {
 
   def find(domain: String, onlyActive: Boolean) = DB.withSession { implicit session =>
     ladders.filter(ldrs =>
-      ldrs.domain === domain && ldrs.active === true).list
+      ldrs.domain === domain &&
+        (if (onlyActive) ldrs.active else true)).list
   }
 
   def save(ladder: Ladder) = DB.withSession { implicit session =>
