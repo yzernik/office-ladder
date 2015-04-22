@@ -35,7 +35,6 @@ object Ladders {
   }
 
   case class Backend($: BackendScope[Unit, State]) {
-
     def handleSubmit(e: ReactEventI) = {
       e.preventDefault()
       val ldr = $.state.LadderInput
@@ -45,15 +44,13 @@ object Ladders {
       }
       $.modState(s => State(s.ladders, LadderInput("")))
     }
-
   }
 
   val LaddersList = ReactComponentB[List[Ladder]]("LaddersList")
     .render(props => {
       def ladderListItem(ladder: Ladder) = <.li(ladder.name)
       <.ul(props map ladderListItem)
-    })
-    .build
+    }).build
 
   val InputChanger = ReactComponentB[ExternalVar[String]]("Input changer")
     .render { evar =>
@@ -62,8 +59,7 @@ object Ladders {
         ^.`type` := "text",
         ^.value := evar.value,
         ^.onChange ~~> updateName)
-    }
-    .build
+    }.build
 
   val LadderInputForm = ReactComponentB[(State, Backend)]("LadderInputForm")
     .render(P => {
@@ -74,8 +70,7 @@ object Ladders {
         <.label("New ladder name:", InputChanger(nameEV)),
         <.br,
         <.button("Create new ladder"))
-    })
-    .build
+    }).build
 
   val LaddersApp = ReactComponentB[Unit]("TodoApp")
     .initialState(State(Nil, LadderInput("")))
@@ -95,7 +90,6 @@ object Ladders {
         case ladders =>
           scope.modState(_ => State(ladders, LadderInput("")))
       }
-
     }).buildU
 
   val content = LaddersApp()
