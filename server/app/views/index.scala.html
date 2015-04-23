@@ -7,12 +7,9 @@
 
 @athorizedcontent(id: models.User) = {
 	<p>Hello @id.firstName!</p>
-
-    <div id="scalajsShoutOut"></div>
-    
-	<script src="@routes.Assets.at("client-jsdeps.js")" type="text/javascript"></script>
-	@playscalajs.html.scripts("/assets", projectName = "client")
-
+	<script type="text/javascript">
+		officeladder.OfficeLadderClient().renderHome();
+	</script>
 }
 
 @userawarepage("Office Ladder")(identity){
