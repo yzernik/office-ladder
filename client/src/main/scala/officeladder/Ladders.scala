@@ -20,14 +20,14 @@ object Ladders {
   case class LadderInput(name: String)
 
   def fetchLadders: Future[List[Ladder]] = {
-    val url = org.scalajs.dom.window.location + "ladders"
+    val url = org.scalajs.dom.window.location.origin + "/ladders"
     Ajax.get(url).map { res =>
       read[List[Ladder]](res.responseText)
     }
   }
 
   def createLadder(ldr: LadderInput): Future[Ladder] = {
-    val url = org.scalajs.dom.window.location + "ladders"
+    val url = org.scalajs.dom.window.location.origin + "/ladders"
     val data = write[LadderInput](ldr)
     Ajax.post(url, data, headers = Map("Content-Type" -> "application/json")).map { res =>
       read[Ladder](res.responseText)

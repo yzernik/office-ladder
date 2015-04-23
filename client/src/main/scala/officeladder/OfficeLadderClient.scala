@@ -10,22 +10,20 @@ import japgolly.scalajs.react.vdom.all._
 
 object OfficeLadderClient extends js.JSApp {
 
-  val container = ReactComponentB[Unit]("homePage")
-    .render(P => {
-      div(`class` := "container",
-        HomePage.content)
-    }).buildU
-
   def main(): Unit = {
     // do nothing!
   }
 
-  def renderClient[P, S, B, N <: TopNode](c: ReactComponentU[P, S, B, N]) = {
+  private def renderClient[P, S, B, N <: TopNode](c: ReactComponentU[P, S, B, N]) = {
     c.render(dom.document.getElementById("client"))
   }
 
   @JSExport
   def renderHome(): Unit =
-    renderClient(container())
+    renderClient(HomePage.container())
+
+  @JSExport
+  def renderAdmin(): Unit =
+    renderClient(Admin.container())
 
 }

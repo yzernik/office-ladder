@@ -33,10 +33,6 @@ object MyApplication
    * @returns The result to send to the client.
    */
   def index = UserAwareAction { implicit request =>
-    val userName = request.identity match {
-      case Some(identity) => identity.fullName
-      case None           => "Guest"
-    }
     Ok(views.html.index(request.identity))
   }
 
@@ -70,7 +66,7 @@ object MyApplication
    * @return The result to display.
    */
   def adminPage = SecuredAction(IsAdmin(adminEmail)) { implicit request =>
-    Ok("Welcome to the admin page.")
+    Ok(views.html.admin(request.identity))
   }
 
   def ladders = SecuredAction.async { implicit request =>

@@ -1,0 +1,8 @@
+@(identity: models.User)
+
+
+@userawarepage("Office Ladder- Admin")(Some(identity)){
+	<script type="text/javascript">
+		officeladder.OfficeLadderClient().renderAdmin();
+	</script>
+}
