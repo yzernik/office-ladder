@@ -26,6 +26,7 @@ object MyApplication
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val adminEmail = play.Play.application.configuration.getString("admin.email")
+  val adminFilter = IsAdmin(adminEmail)
 
   /**
    * Renders the index page.
@@ -65,7 +66,7 @@ object MyApplication
    *
    * @return The result to display.
    */
-  def adminPage = SecuredAction(IsAdmin(adminEmail)) { implicit request =>
+  def adminPage = SecuredAction(adminFilter) { implicit request =>
     Ok(views.html.admin(request.identity))
   }
 
@@ -92,6 +93,16 @@ object MyApplication
           Ok(Json.toJson(ldr))
         }
       })
+  }
+
+  /**
+   * Handles the activate ladder action.
+   *
+   */
+  def activateLadder(ladderId: Long) = SecuredAction(adminFilter).async { implicit request =>
+    ladderService.updateActiveStatus(ladderId, true).map { ldr =>
+      Ok(Json.toJson(ldr))
+    }
   }
 
   object FetchLadders extends ActionTransformer[SecuredRequest, LaddersRequest] {

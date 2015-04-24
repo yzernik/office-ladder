@@ -15,6 +15,14 @@ trait LadderService {
   def save(ladder: Ladder): Future[Ladder]
 
   /**
+   * Updates the active status of a ladder.
+   *
+   * @param user The id of the ladder to update, and the new active status.
+   * @return The updated ladder.
+   */
+  def updateActiveStatus(id: Long, active: Boolean): Future[Option[Ladder]]
+
+  /**
    * Retrieves a ladder that matches the specified id.
    *
    * @param id The id to retrieve a ladder.

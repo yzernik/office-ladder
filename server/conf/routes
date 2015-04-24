@@ -6,12 +6,13 @@
 GET    /                         controllers.MyApplication.index
 
 # Authentication
-GET    /signIn                   controllers.MyApplication.signIn
-GET    /signOut                  controllers.MyApplication.signOut
+GET    /signin                   controllers.MyApplication.signIn
+GET    /signout                  controllers.MyApplication.signOut
 
 GET    /admin                    controllers.MyApplication.adminPage
 GET    /ladders                  controllers.MyApplication.ladders
 POST   /ladders                  controllers.MyApplication.createLadder
+POST   /ladders/:ladderId        controllers.MyApplication.activateLadder(ladderId: Long)
 
 
 # auth
