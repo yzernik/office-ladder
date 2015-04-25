@@ -24,6 +24,9 @@ class LadderServiceImpl(ladderDAO: LadderDAO) extends LadderService {
   def retrieve(id: Long): Future[Option[Ladder]] =
     Future { ladderDAO.find(id) }
 
+  def retrieveAll: Future[List[Ladder]] =
+    Future { ladderDAO.findAll }
+
   def retrieveByDomain(domain: String, onlyActive: Boolean = true): Future[List[Ladder]] =
     Future { ladderDAO.find(domain, onlyActive) }
 

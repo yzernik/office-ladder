@@ -57,19 +57,12 @@ object MyApplication
   def signOut = SecuredAction.async { implicit request =>
     val result = Future.successful(Redirect(routes.MyApplication.index()))
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-
     request.authenticator.discard(result)
   }
 
   /**
-   * Handles the admin page action.
-   *
-   * @return The result to display.
+   * Returns the list of ladders for the user's domain.
    */
-  def adminPage = SecuredAction(adminFilter) { implicit request =>
-    Ok(views.html.admin(request.identity))
-  }
-
   def ladders = SecuredAction.async { implicit request =>
     val domain = request.identity.domain
     ladderService.retrieveByDomain(domain).map {
@@ -96,10 +89,29 @@ object MyApplication
   }
 
   /**
+   * Handles the admin page action.
+   *
+   * @return The result to display.
+   */
+  def adminPage = SecuredAction(adminFilter) { implicit request =>
+    Ok(views.html.admin(request.identity))
+  }
+
+  /**
+   * Returns the list of ladders for the user's domain.
+   */
+  def adminLadders = SecuredAction(adminFilter).async { implicit request =>
+    val domain = request.identity.domain
+    ladderService.retrieveAll.map {
+      ldrs => Ok(Json.toJson(ldrs))
+    }
+  }
+
+  /**
    * Handles the activate ladder action.
    *
    */
-  def activateLadder(ladderId: Long) = SecuredAction(adminFilter).async { implicit request =>
+  def activateLadder(ladderId: Long) = SecuredAction(adminFilter).async {
     ladderService.updateActiveStatus(ladderId, true).map { ldr =>
       Ok(Json.toJson(ldr))
     }

@@ -8,6 +8,13 @@ import models.Ladder
 trait LadderDAO {
 
   /**
+   * Finds all ladders.
+   *
+   * @return The found ladders.
+   */
+  def findAll(): List[Ladder]
+
+  /**
    * Finds a ladder by its id.
    *
    * @param id The id info of the ladder to find.

@@ -10,6 +10,10 @@ class LadderDAOImpl extends LadderDAO {
 
   val ladders = TableQuery[Ladders]
 
+  def findAll(): List[Ladder] = DB.withSession { implicit session =>
+    ladders.list
+  }
+
   def find(id: Long) = DB.withSession { implicit session =>
     ladders.filter(_.id === id).firstOption
   }

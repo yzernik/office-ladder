@@ -5,92 +5,44 @@ import scala.util.{ Success, Failure }
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalajs.dom.ext._
 
-import japgolly.scalajs.react._, vdom.prefix_<^._, ScalazReact._, MonocleReact._, extra._
 import monocle.macros._
 import upickle._
 
-import models.Ladder
+import models._
 
 object Ladders {
 
-  @Lenses
-  case class State(ladders: List[Ladder], LadderInput: LadderInput)
+  val baseUrl = org.scalajs.dom.window.location.origin
+  val laddersUrl = baseUrl + "/ladders"
+  val adminUrl = baseUrl + "/admin"
 
-  @Lenses
-  case class LadderInput(name: String)
+  val contentTypeJson = "Content-Type" -> "application/json"
 
   def fetchLadders: Future[List[Ladder]] = {
-    val url = org.scalajs.dom.window.location.origin + "/ladders"
-    Ajax.get(url).map { res =>
+    Ajax.get(laddersUrl).map { res =>
       read[List[Ladder]](res.responseText)
     }
   }
 
   def createLadder(ldr: LadderInput): Future[Ladder] = {
-    val url = org.scalajs.dom.window.location.origin + "/ladders"
     val data = write[LadderInput](ldr)
-    Ajax.post(url, data, headers = Map("Content-Type" -> "application/json")).map { res =>
+    Ajax.post(laddersUrl, data, headers = Map(contentTypeJson)).map { res =>
       read[Ladder](res.responseText)
     }
   }
 
-  case class Backend($: BackendScope[Unit, State]) {
-    def handleSubmit(e: ReactEventI) = {
-      e.preventDefault()
-      val ldr = $.state.LadderInput
-      createLadder(ldr).onComplete {
-        case Success(res) => org.scalajs.dom.alert(s"New ladder ${res.name} will be created on approval from administrator.")
-        case Failure(t)   => org.scalajs.dom.alert("error: " + t.getMessage)
-      }
-      $.modState(s => State(s.ladders, LadderInput("")))
+  def fetchAdminLadders: Future[List[Ladder]] = {
+    val url = adminUrl + "/ladders"
+    Ajax.get(url).map { res =>
+      read[List[Ladder]](res.responseText)
     }
   }
 
-  val LaddersList = ReactComponentB[List[Ladder]]("LaddersList")
-    .render(props => {
-      def ladderListItem(ladder: Ladder) = <.li(ladder.name)
-      <.ul(props map ladderListItem)
-    }).build
+  def activateLadder(id: Long): Future[Ladder] = {
+    val url = laddersUrl + "/" + id
+    Ajax.post(url).map { res =>
+      read[Ladder](res.responseText)
+    }
+  }
 
-  val InputChanger = ReactComponentB[ExternalVar[String]]("Input changer")
-    .render { evar =>
-      def updateName = (event: ReactEventI) => evar.set(event.target.value)
-      <.input(
-        ^.`type` := "text",
-        ^.value := evar.value,
-        ^.onChange ~~> updateName)
-    }.build
-
-  val LadderInputForm = ReactComponentB[(State, Backend)]("LadderInputForm")
-    .render(P => {
-      val (s, b) = P
-      val lens = State.LadderInput ^|-> LadderInput.name
-      val nameEV = ExternalVar.state(b.$.focusStateL(lens))
-      <.form(^.onSubmit ==> b.handleSubmit,
-        <.label("New ladder name:", InputChanger(nameEV)),
-        <.br,
-        <.button("Create new ladder"))
-    }).build
-
-  val LaddersApp = ReactComponentB[Unit]("TodoApp")
-    .initialState(State(Nil, LadderInput("")))
-    .backend(new Backend(_))
-    .render((_, S, B) =>
-      <.div(
-        <.div(
-          ^.className := "col-lg-6",
-          <.h3("Ladders"),
-          LaddersList(S.ladders)),
-        <.div(
-          ^.className := "col-lg-6",
-          <.h3("Create a new ladder"),
-          LadderInputForm((S, B)))))
-    .componentDidMount(scope => {
-      fetchLadders.onSuccess {
-        case ladders =>
-          scope.modState(_ => State(ladders, LadderInput("")))
-      }
-    }).buildU
-
-  val content = LaddersApp()
 }

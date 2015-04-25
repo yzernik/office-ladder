@@ -31,6 +31,13 @@ trait LadderService {
   def retrieve(id: Long): Future[Option[Ladder]]
 
   /**
+   * Retrieves all ladders.
+   *
+   * @return The retrieved ladders.
+   */
+  def retrieveAll: Future[List[Ladder]]
+
+  /**
    * Retrieves all ladders that matche the specified domain.
    *
    * @param domain The domain to retrieve ladders.
