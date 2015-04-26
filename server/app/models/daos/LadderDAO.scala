@@ -37,4 +37,12 @@ trait LadderDAO {
    * @return The saved user.
    */
   def save(ladder: Ladder): Ladder
+
+  /**
+   * Updates the active status of a ladder.
+   *
+   * @param id of the ladder to update, and new active status.
+   * @return unit.
+   */
+  def updateActiveStatus(id: Long, active: Boolean): Unit
 }

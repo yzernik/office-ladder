@@ -113,7 +113,7 @@ object MyApplication
    */
   def activateLadder(ladderId: Long) = SecuredAction(adminFilter).async {
     ladderService.updateActiveStatus(ladderId, true).map { ldr =>
-      Ok(Json.toJson(ldr))
+      Ok(s"Activated ladder: ${ladderId}")
     }
   }
 

@@ -29,4 +29,11 @@ class LadderDAOImpl extends LadderDAO {
     ladder.copy(id = Some(newId))
   }
 
+  def updateActiveStatus(id: Long, active: Boolean) = DB.withSession { implicit session =>
+    ladders
+      .filter(_.id === id)
+      .map { ldr => ldr.active }
+      .update(true)
+  }
+
 }

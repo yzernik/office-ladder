@@ -15,9 +15,7 @@ class LadderServiceImpl(ladderDAO: LadderDAO) extends LadderService {
 
   def updateActiveStatus(id: Long, active: Boolean) = {
     Future {
-      for {
-        ldr <- ladderDAO.find(id)
-      } yield ladderDAO.save(ldr.copy(active = active))
+      ladderDAO.updateActiveStatus(id, active)
     }
   }
 
