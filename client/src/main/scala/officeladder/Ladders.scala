@@ -39,7 +39,7 @@ object Ladders {
   }
 
   def activateLadder(id: Long): Future[Ladder] = {
-    val url = laddersUrl + "/" + id
+    val url = adminUrl + "/ladders" + "/" + id
     Ajax.post(url).map { res =>
       read[Ladder](res.responseText)
     }
